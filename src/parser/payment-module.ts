@@ -369,7 +369,7 @@ export class PaymentModule extends BaseModule {
   async _canMakePayment(data: Readonly<IssueActivity>) {
     if (!data.self?.closed_by || !data.self.user) return false;
 
-    if (await isAdmin(data.self.user.login, this.context)) return true;
+    if (await isAdmin(data.self.closed_by.login, this.context)) return true;
 
     return isCollaborative(data);
   }

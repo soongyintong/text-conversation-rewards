@@ -1,0 +1,6 @@
+allowBuilds:
+  '@swc/core': true
+  jest-md-dashboard: true
+  msw: true
+  sqlite3: true
+  unrs-resolver: true

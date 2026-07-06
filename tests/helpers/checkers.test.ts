@@ -12,6 +12,7 @@ const assignee = { id: 2, login: "assignee" };
 const reviewer = { id: 3, login: "reviewer" };
 const issueAuthor = { id: 4, login: "issue-author" };
 const outsideReviewer = { id: 5, login: "outside-reviewer" };
+const closer = { id: 6, login: "closer" };
 
 function createReview(
   user: User,
@@ -31,17 +32,19 @@ function createActivity({
   linkedIssueAuthor,
   reviews = [],
   requestedReviewers = [],
+  closedBy = author,
 }: {
   pullRequestContext?: boolean;
   issueAssignee?: User;
   linkedIssueAuthor?: User;
   reviews?: GitHubPullRequestReviewState[];
   requestedReviewers?: User[];
+  closedBy?: User;
 }) {
   return {
     self: {
       user: author,
-      closed_by: author,
+      closed_by: closedBy,
       assignee: issueAssignee,
       pull_request: pullRequestContext ? { html_url: "https://github.com/owner/repo/pull/1" } : undefined,
     },
@@ -136,6 +139,14 @@ describe("collaboration checks", () => {
       });
 
       expect(nonAssigneeApprovedReviews(activity)).toBe(true);
+      expect(isCollaborative(activity)).toBe(true);
+    });
+
+    it("treats an issue closed by a different user as collaborative", () => {
+      const activity = createActivity({
+        closedBy: closer,
+      });
+
       expect(isCollaborative(activity)).toBe(true);
     });
 

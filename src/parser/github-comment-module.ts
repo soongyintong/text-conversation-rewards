@@ -209,7 +209,7 @@ export class GithubCommentModule extends BaseModule {
 
   private async _handlePostComment(data: Readonly<IssueActivity>, result: Result, content: BodyComment) {
     const isIssueCollaborative = isCollaborative(data);
-    const isUserAdmin = data.self?.user ? await isAdmin(data.self.user.login, this.context) : false;
+    const isUserAdmin = data.self?.closed_by ? await isAdmin(data.self.closed_by.login, this.context) : false;
     try {
       if (Object.values(result).some((v) => v.permitUrl ?? v.explorerUrl) || isIssueCollaborative || isUserAdmin) {
         const comment = await this.context.commentHandler.postComment(
